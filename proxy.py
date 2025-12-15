@@ -4,24 +4,23 @@ import os
 
 app = Flask(__name__)
 
-# Correct: read environment variables BY NAME
+# Load environment variables
 ACCESS_TOKEN = os.getenv("DHAN_ACCESS_TOKEN")
 CLIENT_ID = os.getenv("DHAN_CLIENT_ID")
 
 DHAN_ENDPOINT = "https://api-sandbox.dhan.co/orders"
 
-
 @app.route("/place", methods=["POST"])
 def place_order():
-    if ACCESS_TOKEN is None:
+    if not ACCESS_TOKEN:
         return jsonify({"error": "DHAN_ACCESS_TOKEN not set"}), 500
 
-    if CLIENT_ID is None:
+    if not CLIENT_ID:
         return jsonify({"error": "DHAN_CLIENT_ID not set"}), 500
 
     try:
         payload = request.get_json(force=True)
-    except Exception:
+    except:
         return jsonify({"error": "Invalid JSON"}), 400
 
     headers = {
